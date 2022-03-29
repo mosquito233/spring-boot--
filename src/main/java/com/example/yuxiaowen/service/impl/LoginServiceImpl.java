@@ -79,8 +79,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Boolean loginout(HttpSession session){
-//        session.removeAttribute("userId");
-        redisTemplate.delete("userId");
+        session.removeAttribute("userId");
+//        redisTemplate.delete("userId");
         return true;
     }
 }

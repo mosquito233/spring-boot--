@@ -7,7 +7,9 @@ import com.example.yuxiaowen.dto.LoginDO;
 import com.example.yuxiaowen.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController
 @RequestMapping("/test")
+@Configuration
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60)
 public class Login {
 
     @Autowired
@@ -52,8 +56,8 @@ public class Login {
     public CommonResultDTO<?> login(HttpServletRequest request, @RequestBody @Valid LoginDO loginDO) {
         log.info("登录信息loginDO:{},{}", loginDO, request);
         HttpSession session = request.getSession();
-        Integer userId = strRedisTemplate.opsForValue().get("userId");
-//        Integer userId = (Integer) session.getAttribute("userId");
+//        Integer userId = strRedisTemplate.opsForValue().get("userId");
+        Integer userId = (Integer) session.getAttribute("userId");
         if (userId != null) {
             return new CommonResultDTO<>(400, "用户已经登陆", null);
         }
@@ -64,9 +68,9 @@ public class Login {
         log.info("userId:{}", response.getId());
 //        strRedisTemplate.opsForValue().set("userId", response.getId());
         //赋值，设置过期时间
-        strRedisTemplate.opsForValue().set("userId", response.getId(), 20, TimeUnit.SECONDS);
-//        session.setAttribute("userId", response.getId());
-//        session.setMaxInactiveInterval(120);
+//        strRedisTemplate.opsForValue().set("userId", response.getId(), 20, TimeUnit.SECONDS);
+        session.setAttribute("userId", response.getId());
+        session.setMaxInactiveInterval(60);
         return new CommonResultDTO<>(200, "登录成功", response);
     }
 
@@ -75,8 +79,8 @@ public class Login {
     public CommonResultDTO<?> loginout(HttpServletRequest request) {
         log.info("登录信息loginDO:{}", request);
         HttpSession session = request.getSession();
-        Integer userId = strRedisTemplate.opsForValue().get("userId");
-//        Integer userId = (Integer) session.getAttribute("userId");
+//        Integer userId = strRedisTemplate.opsForValue().get("userId");
+        Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             return new CommonResultDTO<>(400, "未有登陆用户", null);
         }

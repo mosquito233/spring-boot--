@@ -1,9 +1,9 @@
 package com.example.yuxiaowen.controller;
 
 
+import com.example.yuxiaowen.dto.UserDO;
+import com.example.yuxiaowen.bo.CommonResultDTO;
 import com.example.yuxiaowen.bo.LoginBO;
-import com.example.yuxiaowen.dto.CommonResultDTO;
-import com.example.yuxiaowen.dto.LoginDO;
 import com.example.yuxiaowen.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.*;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -34,8 +33,8 @@ public class Login {
 //    ErrorValidate errorValidate;
     //注册
     @PostMapping("/register")
-    public CommonResultDTO<?> register(@RequestBody @Valid LoginDO loginDO) {
-        log.info("注册信息loginDO:{}", loginDO);
+    public CommonResultDTO<?> register(@RequestBody @Valid LoginBO loginBO) {
+        log.info("注册信息loginBO:{}", loginBO);
 //        errorValidate.handleValidationExceptions();
         // 参数校验
 //        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -45,7 +44,7 @@ public class Login {
 //            log.error(violation.getMessage());
 //        }
 //        LoginBO response = loginService.register(loginDO);
-        return loginService.register(loginDO);
+        return loginService.register(loginBO);
 //        throw new RuntimeException();
 //        throw new IllegalArgumentException();
 //        return new CommonResult<>(200, "success", response);
@@ -53,15 +52,16 @@ public class Login {
 
     //登录
     @PostMapping("/login")
-    public CommonResultDTO<?> login(HttpServletRequest request, @RequestBody @Valid LoginDO loginDO) {
-        log.info("登录信息loginDO:{},{}", loginDO, request);
+    public CommonResultDTO<?> login(HttpServletRequest request, @RequestBody @Valid LoginBO loginBO) {
+        log.info("登录信息loginBO:{},{}", loginBO, request);
         HttpSession session = request.getSession();
+        log.info("sessionId:{}",session.getId());
 //        Integer userId = strRedisTemplate.opsForValue().get("userId");
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId != null) {
             return new CommonResultDTO<>(400, "用户已经登陆", null);
         }
-        LoginBO response = loginService.login(loginDO);
+        UserDO response = loginService.login(loginBO);
         if (StringUtils.isEmpty(response)) {
             return new CommonResultDTO<>(400, "没有这个账户", null);
         }
@@ -77,8 +77,9 @@ public class Login {
     //注销
     @PostMapping("/loginout")
     public CommonResultDTO<?> loginout(HttpServletRequest request) {
-        log.info("登录信息loginDO:{}", request);
+        log.info("登录信息loginBO:{}", request);
         HttpSession session = request.getSession();
+        log.info("sessionId Loginout:{}",session.getId());
 //        Integer userId = strRedisTemplate.opsForValue().get("userId");
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {

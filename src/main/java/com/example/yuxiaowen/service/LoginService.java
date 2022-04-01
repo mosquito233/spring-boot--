@@ -1,26 +1,25 @@
 package com.example.yuxiaowen.service;
 
+import com.example.yuxiaowen.dto.UserDO;
+import com.example.yuxiaowen.bo.CommonResultDTO;
 import com.example.yuxiaowen.bo.LoginBO;
-import com.example.yuxiaowen.dto.CommonResultDTO;
-import com.example.yuxiaowen.dto.LoginDO;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public interface LoginService {
     /**
      * 注册
-     * @param loginDO
+     * @param loginBO
      * @return
      */
-    CommonResultDTO<?> register(LoginDO loginDO);
+    CommonResultDTO<?> register(LoginBO loginBO);
 
     /**
      * 登录
-     * @param loginDO
+     * @param loginBO
      * @return
      */
-    LoginBO login(LoginDO loginDO);
+    UserDO login(LoginBO loginBO);
 
     /**
      *

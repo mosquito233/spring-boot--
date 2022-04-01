@@ -1,4 +1,4 @@
-package com.example.yuxiaowen.dto;
+package com.example.yuxiaowen.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,24 +1,20 @@
 package com.example.yuxiaowen.service.impl;
 
-import com.example.yuxiaowen.bo.LoginBO;
-import com.example.yuxiaowen.dto.CommonResultDTO;
+import com.example.yuxiaowen.dto.UserDO;
+import com.example.yuxiaowen.bo.CommonResultDTO;
 import com.example.yuxiaowen.mapper.LoginMapper;
-import com.example.yuxiaowen.dto.LoginDO;
+import com.example.yuxiaowen.bo.LoginBO;
 import com.example.yuxiaowen.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Validator;
-import java.security.Security;
 
 @Slf4j
 @Service
@@ -36,23 +32,23 @@ public class LoginServiceImpl implements LoginService {
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public CommonResultDTO<?> register(LoginDO loginDO) {
+    public CommonResultDTO<?> register(LoginBO loginBO) {
         // userName unique
         // userName是否已经在数据库里，若存在，则提示该用户已存在，return；
-        Integer id = loginMapper.queryByUserName(loginDO.getUserName());
+        Integer id = loginMapper.queryByUserName(loginBO.getUserName());
         log.info("id:{}", id);
         if (id == null) {
             // new一个新的实例
-            LoginDO loginDO1 = new LoginDO();
+            LoginBO loginBO1 = new LoginBO();
             // copy bean DO->新的实例
-            BeanUtils.copyProperties(loginDO, loginDO1);
-            log.info("loginDO1:{}", loginDO1);
+            BeanUtils.copyProperties(loginBO, loginBO1);
+            log.info("loginBO1:{}", loginBO1);
             // 将password加密
-            String encoded = passwordEncoder.encode(loginDO1.getPassword());
+            String encoded = passwordEncoder.encode(loginBO1.getPassword());
             log.info("encoded:{}", encoded);
-            loginDO1.setPassword(encoded);
+            loginBO1.setPassword(encoded);
             try {
-                loginMapper.insert(loginDO1);
+                loginMapper.insert(loginBO1);
 //                throw new RuntimeException();
             } catch (Exception e) {
                 log.error("insert register error! e:{}", e);
@@ -65,11 +61,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public LoginBO login(LoginDO loginDO) {
-        LoginBO response = loginMapper.queryAllByUserName(loginDO);
+    public UserDO login(LoginBO loginBO) {
+        UserDO response = loginMapper.queryAllByUserName(loginBO);
         log.info("查询之后的结果:{}", response);
         String encryptCode = response.getPassword();
-        boolean loginFlag = passwordEncoder.matches(loginDO.getPassword(), encryptCode);
+        boolean loginFlag = passwordEncoder.matches(loginBO.getPassword(), encryptCode);
         log.info("result:{}", loginFlag);
         if (!loginFlag) {
             return null;

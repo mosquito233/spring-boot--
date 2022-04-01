@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.yuxiaowen.mapper.LoginMapper">
-    <resultMap id="BaseResultMap" type="com.example.yuxiaowen.bo.LoginBO">
+    <resultMap id="BaseResultMap" type="com.example.yuxiaowen.dto.UserDO">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
@@ -16,7 +16,7 @@
         id
         ,user_name,password,flag,gmt_create,gmt_modify
     </sql>
-    <insert id="insert" parameterType="com.example.yuxiaowen.dto.LoginDO">
+    <insert id="insert" parameterType="com.example.yuxiaowen.bo.LoginBO">
         insert into
         <include refid="table"/>
         (user_name,password) values(#{userName},#{password})
@@ -26,7 +26,7 @@
         <include refid="table"/>
         where user_name= #{userName,jdbcType=VARCHAR}
     </select>
-    <select id="queryAllByUserName" parameterType="com.example.yuxiaowen.dto.LoginDO" resultType="com.example.yuxiaowen.bo.LoginBO">
+    <select id="queryAllByUserName" parameterType="com.example.yuxiaowen.bo.LoginBO" resultType="com.example.yuxiaowen.dto.UserDO">
         select * from
         <include refid="table"/>
         where user_name= #{userName,jdbcType=VARCHAR}

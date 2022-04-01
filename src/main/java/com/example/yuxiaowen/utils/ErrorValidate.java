@@ -1,6 +1,6 @@
 package com.example.yuxiaowen.utils;
 
-import com.example.yuxiaowen.dto.CommonResultDTO;
+import com.example.yuxiaowen.bo.CommonResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;

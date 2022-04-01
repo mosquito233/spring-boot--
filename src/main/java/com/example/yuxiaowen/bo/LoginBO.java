@@ -2,32 +2,24 @@ package com.example.yuxiaowen.bo;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class LoginBO {
     /**
-     * 唯一索引
-     */
-    private Integer id;
-    /**
      * 用户名
      */
+    @NotBlank(message = "用户名不能为空~")
     private String userName;
     /**
      * 密码
      */
+    @NotBlank
     private String password;
-    /**
-     * 标识
-     */
-    private Integer flag;
-    /**
-     * 创建时间
-     */
-    private LocalDateTime gmtCreate;
-    /**
-     * 修改时间
-     */
-    private LocalDateTime gmtModify;
+//    /**
+//     * 邮箱
+//     */
+//    @Email
+//    @NotEmpty
+//    private String email;
 }

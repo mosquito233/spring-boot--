@@ -55,7 +55,7 @@ public class LoginServiceImpl implements LoginService {
                 return new CommonResultDTO<>(404, "捕获异常", null);
             }
         } else {
-            return new CommonResultDTO<>(400, "注册失败", null);
+            return new CommonResultDTO<>(400, "账户已经存在，注册失败", null);
         }
         return new CommonResultDTO<>(200, "注册成功", null);
     }

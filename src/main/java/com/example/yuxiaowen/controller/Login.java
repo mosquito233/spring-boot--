@@ -77,7 +77,7 @@ public class Login {
     @SneakyThrows
     @PostMapping("/login")
     public CommonResultDTO<?> login(@RequestBody @Valid LoginBO loginBO) {
-        log.info("登录信息loginBO:{}", loginBO);
+        log.info("login loginBO:{}", loginBO);
 
         UserDO response = loginService.login(loginBO);
 
@@ -104,23 +104,17 @@ public class Login {
     //注销
     @PostMapping("/loginout")
     public CommonResultDTO<?> loginout(HttpServletRequest request) {
-        log.info("登录信息loginBO:{}", request);
-        HttpSession session = request.getSession();
-        log.info("sessionId Loginout:{}", session.getId());
-//        Integer userId = strRedisTemplate.opsForValue().get("userId");
-        //获取之后，del
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            return new CommonResultDTO<>(400, "未有登陆用户", null);
-        }
-        loginService.loginout(session);
+        log.info("loginout resquest:{}", request);
+        String token = request.getHeader("token");
+        String key = "LoginToken_" + token;
+        stringRedisTemplate.delete(key);
         return new CommonResultDTO<>(200, "注销成功", null);
     }
 
     @SneakyThrows
     @PostMapping("/handle")
     public CommonResultDTO<?> handle(HttpServletRequest request) {
-        log.info("handle request:{}", request.getHeader("token"));
+        log.info("handle resquest:{}", request);
         String token = request.getHeader("token");
         String key = "LoginToken_" + token;
         log.info("handle Token result:{}", stringRedisTemplate.opsForValue().get(key));

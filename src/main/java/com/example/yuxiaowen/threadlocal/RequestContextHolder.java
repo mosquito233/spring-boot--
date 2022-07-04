@@ -1,4 +1,4 @@
-package com.example.yuxiaowen.threadLocal;
+package com.example.yuxiaowen.threadlocal;
 
 
 public class RequestContextHolder {

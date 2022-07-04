@@ -26,7 +26,7 @@
         <include refid="table"/>
         where user_name= #{userName,jdbcType=VARCHAR}
     </select>
-    <select id="queryAllByUserName" parameterType="com.example.yuxiaowen.bo.LoginBO" resultType="com.example.yuxiaowen.dto.UserDO">
+    <select id="queryAllByUserName" parameterType="com.example.yuxiaowen.bo.LoginBO" resultMap="BaseResultMap">
         select * from
         <include refid="table"/>
         where user_name= #{userName,jdbcType=VARCHAR}

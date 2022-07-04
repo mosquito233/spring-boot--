@@ -2,7 +2,7 @@ package com.example.yuxiaowen.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class UserDO {
@@ -25,9 +25,9 @@ public class UserDO {
     /**
      * 创建时间
      */
-    private LocalDateTime gmtCreate;
+    private Date gmtCreate;
     /**
      * 修改时间
      */
-    private LocalDateTime gmtModify;
+    private Date gmtModify;
 }

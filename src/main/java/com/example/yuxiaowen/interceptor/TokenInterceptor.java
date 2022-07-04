@@ -1,17 +1,11 @@
-package com.example.yuxiaowen.Interceptor;
+package com.example.yuxiaowen.interceptor;
 
 import com.example.yuxiaowen.bo.TokenBO;
-import com.example.yuxiaowen.threadLocal.RequestContextHolder;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.yuxiaowen.threadlocal.RequestContextHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,7 +16,7 @@ import org.springframework.lang.Nullable;
 
 @Slf4j
 @Service
-public class InterceptorConfig implements HandlerInterceptor {
+public class TokenInterceptor implements HandlerInterceptor {
 
     public StringRedisTemplate stringRedisTemplate;
 
@@ -47,6 +41,8 @@ public class InterceptorConfig implements HandlerInterceptor {
             log.info("redis无对应的token");
             return false;
         }
+        //将redis中缓存的token存入threadLocal;
+        RequestContextHolder.set(value);
         log.info("redis中token匹配成功");
         return true;
     }

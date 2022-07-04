@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 @Slf4j
 @RestController
 @RequestMapping("/demo")
-public class demo {
+public class Demo {
 
     @Autowired
     LoginDemoService login;

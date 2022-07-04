@@ -6,7 +6,7 @@ import com.example.yuxiaowen.dto.UserDO;
 import com.example.yuxiaowen.bo.CommonResultDTO;
 import com.example.yuxiaowen.bo.LoginBO;
 import com.example.yuxiaowen.service.LoginService;
-import com.example.yuxiaowen.threadLocal.RequestContextHolder;
+import com.example.yuxiaowen.threadlocal.RequestContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -90,15 +88,14 @@ public class Login {
         log.info("uuid:{}", uuid);
         String key = "LoginToken_" + uuid;
         log.info("token key:{}", key);
-        Map<String, String> value = new HashMap<>();
-        value.put("userId", String.valueOf(response.getId()));
-        value.put("loginTime", String.valueOf(new Date().getTime()));
-        log.info("token value:{}", value);
-        stringRedisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(value), 10, TimeUnit.MINUTES);
+        TokenBO tokenBO = new TokenBO();
+        tokenBO.setLoginTime(new Date().getTime());
+        tokenBO.setUserId(response.getId());
+        log.info("token value:{}", tokenBO);
+        stringRedisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(tokenBO), 10, TimeUnit.MINUTES);
 
-        Map<String, String> data = new HashMap<>();
-        data.put("token", uuid);
-        return new CommonResultDTO<>(200, "登录成功", data);
+        tokenBO.setToken(uuid);
+        return new CommonResultDTO<>(200, "登录成功", tokenBO);
     }
 
     //注销
@@ -114,11 +111,8 @@ public class Login {
     @SneakyThrows
     @PostMapping("/handle")
     public CommonResultDTO<?> handle(HttpServletRequest request) {
-        log.info("handle resquest:{}", request);
-        String token = request.getHeader("token");
-        String key = "LoginToken_" + token;
-        log.info("handle Token result:{}", stringRedisTemplate.opsForValue().get(key));
-        TokenBO tokenBO = objectMapper.readValue(stringRedisTemplate.opsForValue().get(key), TokenBO.class);
+        String token = RequestContextHolder.get();
+        TokenBO tokenBO = objectMapper.readValue(token, TokenBO.class);
         log.info("convert Json to Class:{}", tokenBO);
         //判断与当前事件超时，如果超时，就登出
         return null;

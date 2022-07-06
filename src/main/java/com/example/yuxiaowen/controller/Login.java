@@ -114,6 +114,24 @@ public class Login {
         String token = RequestContextHolder.get();
         TokenBO tokenBO = objectMapper.readValue(token, TokenBO.class);
         log.info("convert Json to Class:{}", tokenBO);
+        ArrayList<Integer> collection = new ArrayList<>();
+        collection.add(5);
+        collection.add(1);
+        collection.add(3);
+        Iterator iterator = collection.iterator();
+        while(iterator.hasNext()){
+            log.info("数组：{}",iterator.next());
+        }
+        Collections.sort(collection,new Comparator<Integer>(){
+            @Override
+            public int compare(Integer a,Integer b){
+                return a-b;
+            }
+        });
+        Iterator iterator1 = collection.iterator();
+        while(iterator1.hasNext()){
+            log.info("数组1：{}",iterator1.next());
+        }
         //判断与当前事件超时，如果超时，就登出
         return null;
     }
